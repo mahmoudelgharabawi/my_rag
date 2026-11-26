@@ -28,4 +28,17 @@ class VectorStore:
         print("--- Finished creating vector store ---")
 
         print(f"Vector store created and saved to {self.persist_directory}")
+        self.db = vector_store
         return vector_store
+
+    def load(self):
+        """Open the persisted Chroma collection."""
+        if getattr(self, "db", None) is not None:
+            return self.db
+
+        print(f"Loading vector store from {self.persist_directory}...")
+        self.db = Chroma(
+            persist_directory=self.persist_directory,
+            embedding_function=self.embedding_model,
+        )
+        return self.db
